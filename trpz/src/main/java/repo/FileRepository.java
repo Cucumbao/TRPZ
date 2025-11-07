@@ -12,10 +12,11 @@ import java.util.List;
 public class FileRepository implements Repository<File> {
     private final String jsonFilePath;
 
-
     public FileRepository(String jsonFilePath ) {
         this.jsonFilePath = jsonFilePath;
     }
+
+
 
     public List<File> getFilesFromJson() {
         List<File> files = new ArrayList<>();
@@ -25,16 +26,16 @@ public class FileRepository implements Repository<File> {
 
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject obj = jsonArray.getJSONObject(i);
-                File file = new File(
-                        obj.getLong("id"),
-                        obj.getString("name"),
-                        obj.getString("filecontent"),
-                        obj.getLong("userid"),
-                        obj.getString("lastUpdate")
-                );
+                File file = new File();
+
+                file.setId(obj.getLong("id"));
+                file.setFileName(obj.getString("name"));
+                file.setContent(obj.getString("filecontent"));
+                file.setUser(obj.getLong("userid"));
+                file.setLastUpdate(obj.getString("lastUpdate"));
+
                 files.add(file);
             }
-
         } catch (IOException e) {
             e.printStackTrace();
         }

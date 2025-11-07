@@ -7,16 +7,9 @@ public class File {
     private Long userid;
     private String lastUpdate;
 
-    public File(Long id, String fileName, String content,Long userid, String lastUpdate) {
-        this.id = id;
-        this.fileName = fileName;
-        this.content = content;
-        this.userid = userid;
-        this.lastUpdate = lastUpdate;
+    public File() {
     }
 
-
-    // геттери та сеттери
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 

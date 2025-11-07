@@ -47,7 +47,6 @@ public class CommandExecutor {
                 se.cook(command);
                 result = se.evaluate(null);
             } else {
-                // Виконати як вираз
                 ExpressionEvaluator ee = new ExpressionEvaluator();
                 ee.setExpressionType(Object.class);
                 ee.setDefaultImports(new String[]{"java.time.*"});
@@ -67,6 +66,6 @@ public class CommandExecutor {
     public static void main(String[] args) throws CompileException, InvocationTargetException {
         MacroRepository MacroRepo = new MacroRepository("src/main/java/TestData/Macros.json");
         CommandExecutor executor = new CommandExecutor(MacroRepo);
-        executor.Execute(1L);
+        executor.Execute(3L);
     }
 }
