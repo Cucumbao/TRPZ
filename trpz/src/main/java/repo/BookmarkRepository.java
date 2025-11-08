@@ -53,7 +53,7 @@ public class BookmarkRepository implements Repository<Bookmark> {
 
 
     @Override
-    public void findById(Long id) {
+    public File findById(Long id) {
         List<Bookmark> bookmarks = getBookmarkFromJson();
         for (Bookmark b : bookmarks) {
             if (b.getId().equals(id)) {
@@ -61,6 +61,7 @@ public class BookmarkRepository implements Repository<Bookmark> {
             }
         }
         System.out.println("Bookmark with id=" + id + " not found.");
+        return null;
     }
     @Override
     public void findAll() {
@@ -72,6 +73,7 @@ public class BookmarkRepository implements Repository<Bookmark> {
     }
 
     @Override
-    public void delete(Long id) {
+    public Bookmark delete(Long id) {
+        return null;
     }
 }

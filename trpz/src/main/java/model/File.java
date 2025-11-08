@@ -3,6 +3,7 @@ package model;
 public class File {
     private Long id;
     private String fileName;
+    private String filePath;
     private String content;
     private Long userid;
     private String lastUpdate;
@@ -15,6 +16,9 @@ public class File {
 
     public String getFileName() { return fileName; }
     public void setFileName(String fileName) { this.fileName = fileName; }
+
+    public String getFilePath() { return filePath; }
+    public void setFilePath(String filePath) { this.filePath = filePath; }
 
     public String getContent() { return content; }
     public void setContent(String content) { this.content = content; }
@@ -31,6 +35,7 @@ public class File {
         return "model.File.json{" +
                 "id=" + id +
                 ", fileName='" + fileName + '\'' +
+                ", filePath='" + filePath + '\'' +
                 ", user=" + (userid) +
                 ", content=" + (content) +
                 ", lastUpdate=" + lastUpdate +

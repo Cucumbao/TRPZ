@@ -49,15 +49,16 @@ public class MacroRepository implements Repository<Macro> {
 
 
     @Override
-    public void findById(Long id) {
+    public File findById(Long id) {
         List<Macro> macros = getMacrosFromJson();
         for (Macro b : macros) {
             if (b.getId().equals(id)) {
                 System.out.println(b);
-                return;
+                return null;
             }
         }
         System.out.println("Macros with id=" + id + " not found.");
+        return null;
     }
 
     @Override
@@ -71,8 +72,7 @@ public class MacroRepository implements Repository<Macro> {
     }
 
     @Override
-    public void delete(Long id) {
+    public Macro delete(Long id) {
+        return null;
     }
-
-
 }

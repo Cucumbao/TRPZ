@@ -1,10 +1,11 @@
 package repo;
 
 
+import model.File;
 
 public interface Repository<T> {
-    void findById(Long id);
+    File findById(Long id);
     void findAll();
     void save(T entity);
-    void delete(Long id);
+    T delete(Long id);
 }

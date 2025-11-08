@@ -50,7 +50,7 @@ public class UserRepository implements Repository<User> {
         repo.findById(2L);
     }
     @Override
-    public void findById(Long id) {
+    public File findById(Long id) {
         List<User> users = getUserFromJson();
         for (User b : users) {
             if (b.getUserid().equals(id)) {
@@ -58,6 +58,7 @@ public class UserRepository implements Repository<User> {
             }
         }
         System.out.println("User with id=" + id + " not found.");
+        return null;
     }
     @Override
     public void findAll() {
@@ -70,8 +71,8 @@ public class UserRepository implements Repository<User> {
     }
 
     @Override
-    public void delete(Long id) {
-
+    public User delete(Long id) {
+        return null;
     }
 }
 

@@ -2,8 +2,14 @@ package repo;
 import model.File;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import strategy.FileSaver;
+import strategy.SaveAsJson;
+import strategy.SaveAsTxt;
+import strategy.SaveAsXml;
+
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +21,7 @@ public class FileRepository implements Repository<File> {
     public FileRepository(String jsonFilePath ) {
         this.jsonFilePath = jsonFilePath;
     }
-
+    private final List<File> filesInMemory = new ArrayList<>();
 
 
     public List<File> getFilesFromJson() {
@@ -30,6 +36,7 @@ public class FileRepository implements Repository<File> {
 
                 file.setId(obj.getLong("id"));
                 file.setFileName(obj.getString("name"));
+                file.setFilePath(obj.getString("filepath"));
                 file.setContent(obj.getString("filecontent"));
                 file.setUser(obj.getLong("userid"));
                 file.setLastUpdate(obj.getString("lastUpdate"));
@@ -56,14 +63,15 @@ public class FileRepository implements Repository<File> {
 
 
     @Override
-    public void findById(Long id) {
+    public File findById(Long id) {
         List<File> files = getFilesFromJson();
         for (File b : files) {
             if (b.getId().equals(id)) {
-                System.out.println(b);
+                return b;
             }
         }
-        System.out.println("Bookmark with id=" + id + " not found.");
+        System.out.println("File with id=" + id + " not found.");
+        return null;
     }
     @Override
     public void findAll() {
@@ -73,33 +81,45 @@ public class FileRepository implements Repository<File> {
 
     @Override
     public void save(File file) {
+        filesInMemory.add(file);
+        FileSaver saver = new FileSaver();
+        String path = file.getFilePath().toLowerCase();
+        if (path.endsWith("json")) {
+            saver.setStrategy(new SaveAsJson());
+        } else if (path.endsWith("xml")) {
+            saver.setStrategy(new SaveAsXml());
+        } else if (path.endsWith("txt")) {
+            saver.setStrategy(new SaveAsTxt());
+        }
+        saver.save(file);
     }
 
     @Override
-    public void delete(Long id) {
-        List<File> files = getFilesFromJson();
-        boolean removed = files.removeIf(f -> f.getId().equals(id));
-
-        if (!removed) {
-            System.out.println("Файл з id=" + id + " не знайдено.");
-            return;
-        }
-        JSONArray jsonArray = new JSONArray();
-        for (File f : files) {
-            JSONObject obj = new JSONObject();
-            obj.put("id", f.getId());
-            obj.put("name", f.getFileName());
-            obj.put("filecontent", f.getContent());
-            obj.put("userid", f.getUser());
-            obj.put("lastUpdate", f.getLastUpdate());
-            jsonArray.put(obj);
+    public File delete(Long id) {
+        File deletedFile = findByIdInMemory(id);
+        if (deletedFile == null) {
+            System.out.println("File with id=" + id + " not found.");
+            return null;
         }
 
+        filesInMemory.remove(deletedFile);
+
+        Path path = Paths.get(deletedFile.getFilePath());
         try {
-            Files.write(Paths.get(jsonFilePath), jsonArray.toString(4).getBytes());
-            System.out.println("Файл з id=" + id + " успішно видалено.");
+            Files.deleteIfExists(path);
+            System.out.println("File deleted: " + deletedFile.getFileName());
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        return deletedFile;
+    }
+    public File findByIdInMemory(Long id) {
+        for (File f : filesInMemory) {
+            if (f.getId().equals(id)) {
+                return f;
+            }
+        }
+        return null;
     }
 }

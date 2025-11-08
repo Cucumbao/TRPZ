@@ -1,5 +1,5 @@
 package repo;
-import model.Macro;
+import model.File;
 import model.Snippet;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -48,15 +48,16 @@ public class SnippetRepository implements Repository<Snippet> {
     }
 
     @Override
-    public void findById(Long id) {
+    public File findById(Long id) {
         List<Snippet> snippets = getSnippetFromJson();
         for (Snippet b : snippets) {
             if (b.getId().equals(id)) {
                 System.out.println(b);
-                return;
+                return null;
             }
         }
         System.out.println("Macros with id=" + id + " not found.");
+        return null;
     }
 
     @Override
@@ -70,6 +71,7 @@ public class SnippetRepository implements Repository<Snippet> {
     }
 
     @Override
-    public void delete(Long id) {
+    public Snippet delete(Long id) {
+        return null;
     }
 }
