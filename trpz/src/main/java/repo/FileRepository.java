@@ -1,5 +1,7 @@
 package repo;
 import model.File;
+import observer.Observer;
+import observer.Subject;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import strategy.FileSaver;
@@ -15,13 +17,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class FileRepository implements Repository<File> {
+public class FileRepository implements Repository<File>, Subject {
     private final String jsonFilePath;
 
     public FileRepository(String jsonFilePath ) {
         this.jsonFilePath = jsonFilePath;
     }
     private final List<File> filesInMemory = new ArrayList<>();
+    private final List<Observer> observers = new ArrayList<>();
 
 
     public List<File> getFilesFromJson() {
@@ -92,6 +95,7 @@ public class FileRepository implements Repository<File> {
             saver.setStrategy(new SaveAsTxt());
         }
         saver.save(file);
+        notifyObservers(file, "saved");
     }
 
     @Override
@@ -107,12 +111,44 @@ public class FileRepository implements Repository<File> {
         Path path = Paths.get(deletedFile.getFilePath());
         try {
             Files.deleteIfExists(path);
-            System.out.println("File deleted: " + deletedFile.getFileName());
         } catch (IOException e) {
             e.printStackTrace();
         }
+        notifyObservers(deletedFile, "deleted");
 
         return deletedFile;
+    }
+    @Override
+    public File update(File updatedFile) {
+        File existing = findByIdInMemory(updatedFile.getId());
+
+        if (existing == null) {
+            System.out.println("File not found for update: id=" + updatedFile.getId());
+            return null;
+        }
+
+        existing.setFileName(updatedFile.getFileName());
+        existing.setFilePath(updatedFile.getFilePath());
+        existing.setContent(updatedFile.getContent());
+        existing.setUser(updatedFile.getUser());
+        existing.setLastUpdate(updatedFile.getLastUpdate());
+
+        FileSaver saver = new FileSaver();
+
+        String path = existing.getFilePath().toLowerCase();
+        if (path.endsWith("json")) {
+            saver.setStrategy(new SaveAsJson());
+        } else if (path.endsWith("xml")) {
+            saver.setStrategy(new SaveAsXml());
+        } else if (path.endsWith("txt")) {
+            saver.setStrategy(new SaveAsTxt());
+        }
+
+        saver.save(existing);
+
+        notifyObservers(existing, "updated");
+
+        return existing;
     }
     public File findByIdInMemory(Long id) {
         for (File f : filesInMemory) {
@@ -121,5 +157,22 @@ public class FileRepository implements Repository<File> {
             }
         }
         return null;
+    }
+
+    @Override
+    public void attach(Observer observer) {
+        observers.add(observer);
+    }
+
+    @Override
+    public void detach(Observer observer) {
+        observers.remove(observer);
+    }
+
+    @Override
+    public void notifyObservers(model.File file, String message) {
+        for (Observer obs : observers) {
+            obs.update(file, message);
+        }
     }
 }

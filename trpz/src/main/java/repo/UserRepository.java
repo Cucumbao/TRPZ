@@ -74,5 +74,7 @@ public class UserRepository implements Repository<User> {
     public User delete(Long id) {
         return null;
     }
+    @Override
+    public User update(User user) {return null;}
 }
 

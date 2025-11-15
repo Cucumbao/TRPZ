@@ -75,4 +75,7 @@ public class MacroRepository implements Repository<Macro> {
     public Macro delete(Long id) {
         return null;
     }
+
+    @Override
+    public Macro update(Macro macro) {return null;}
 }

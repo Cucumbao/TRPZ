@@ -76,4 +76,7 @@ public class BookmarkRepository implements Repository<Bookmark> {
     public Bookmark delete(Long id) {
         return null;
     }
+
+    @Override
+    public Bookmark update(Bookmark bookmark) {return null;}
 }

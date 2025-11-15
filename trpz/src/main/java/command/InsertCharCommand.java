@@ -27,7 +27,7 @@ public class InsertCharCommand implements Command {
             }
             sb.insert(position, character);
             file.setContent(sb.toString());
-            reseiver.save(file);
+            reseiver.update(file);
             System.out.println("Char " + "`" + character + "`" +  " inserted in File: " + file.getFileName());
         }
     }

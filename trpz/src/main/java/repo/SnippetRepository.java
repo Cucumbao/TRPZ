@@ -74,4 +74,7 @@ public class SnippetRepository implements Repository<Snippet> {
     public Snippet delete(Long id) {
         return null;
     }
+
+    @Override
+    public Snippet update(Snippet snippet) {return null;}
 }

@@ -8,4 +8,5 @@ public interface Repository<T> {
     void findAll();
     void save(T entity);
     T delete(Long id);
+    T update(T entity);
 }
