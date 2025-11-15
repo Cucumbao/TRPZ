@@ -5,6 +5,9 @@ import model.File;
 import observer.LogObserver;
 import observer.StatusBarObserver;
 import repo.FileRepository;
+import templateMethod.LowercaseFormatter;
+import templateMethod.TextFormatterTemplate;
+import templateMethod.UppercaseFormatter;
 
 public class App {
     public static void main(String[] args) {
@@ -19,21 +22,22 @@ public class App {
         fileJson.setFilePath("C:\\Users\\АНЮТА\\IdeaProjects\\trpz\\json");
         fileJson.setContent("\"text\": \"Hello JSON\"");
 
-        File fileTxt = new File();
-        fileTxt.setId(2L);
-        fileTxt.setFileName("file_txt");
-        fileTxt.setFilePath("C:\\Users\\АНЮТА\\IdeaProjects\\trpz\\txt");
-        fileTxt.setContent("\"text\": \"afqk\"");
-
+        File filetxt = new File();
+        filetxt.setId(2L);
+        filetxt.setFileName("file_txt1");
+        filetxt.setFilePath("C:\\Users\\АНЮТА\\IdeaProjects\\trpz\\txt");
+        filetxt.setContent("\"TEXT\": \"Hello TXT\"");
 
         Command save1 = new SaveFileCommand(repository, fileJson);
-        Command save2 = new SaveFileCommand(repository, fileTxt);
-        Command delete = new DeleteFileCommand(repository, 1L);
-        InsertCharCommand insertChar = new InsertCharCommand(repository, 2L, '>', 5);
-
+        Command save2 = new SaveFileCommand(repository, filetxt);
         invoker.executeCommand(save1);
         invoker.executeCommand(save2);
-        invoker.executeCommand(insertChar);
-        invoker.executeCommand(delete);
+
+        TextFormatterTemplate formatter = new UppercaseFormatter(repository);
+        TextFormatterTemplate formatter2 = new LowercaseFormatter(repository);
+        String result = formatter.format(1L);
+        String result2 = formatter2.format(2L);
+        System.out.println(result);
+        System.out.println(result2);
     }
 }
